@@ -1,9 +1,12 @@
 import React from 'react';
+import { UITypography } from '../components';
 
 export const Chat: React.FC = () => {
 	return (
 		<div>
-			<h1 className="text-3xl font-bold underline">Chat</h1>
+			<UITypography variant="h1" fontWeight="semibold" space="mb-0">
+				Chat
+			</UITypography>
 		</div>
 	);
 };
