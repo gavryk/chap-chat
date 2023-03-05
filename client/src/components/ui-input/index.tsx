@@ -41,7 +41,7 @@ export const UIInput = React.forwardRef<HTMLInputElement, InputProps>(
 		ref,
 	) => {
 		return (
-			<div className="block">
+			<div className={className}>
 				{label && type !== 'radio' && type !== 'checkbox' && (
 					<UILabel htmlFor={id ? id : ''}>{label}</UILabel>
 				)}
@@ -56,7 +56,7 @@ export const UIInput = React.forwardRef<HTMLInputElement, InputProps>(
 					placeholder={placeholder}
 					onClick={onClick}
 					value={value}
-					className={className}
+					className="w-full rounded-sm border p-2"
 					ref={ref}
 					checked={checked}
 				/>
