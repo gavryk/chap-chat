@@ -1,7 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { RegisterForm } from '../features';
 
 export const Register: React.FC = () => {
-  return (
-    <div>Register</div>
-  )
-}
+	return (
+		<div>
+			<RegisterForm />
+		</div>
+	);
+};

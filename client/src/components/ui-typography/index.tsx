@@ -17,9 +17,9 @@ export const UITypography = ({
 	children,
 }: TypoProps) => {
 	const Tag: any = useTitleTag(variant);
-	const FontSize = useFontSize(variant);
+	const fontSize = useFontSize(variant);
 
 	return (
-		<Tag className={`${space} font-${fontWeight} text-${textAlign} ${FontSize}`}>{children}</Tag>
+		<Tag className={`${space} font-${fontWeight} text-${textAlign} ${fontSize}`}>{children}</Tag>
 	);
 };
