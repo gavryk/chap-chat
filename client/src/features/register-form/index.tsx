@@ -16,8 +16,13 @@ export const RegisterForm: React.FC = () => {
 	};
 
 	return (
-		<div className="bg-blue-50 h-screen flex items-center">
-			<UITypography variant="h2" fontWeight="bold" space="mb-5" textAlign="center">
+		<div className="bg-blue-50 h-screen flex flex-wrap place-content-center items-center justify-center">
+			<UITypography
+				variant="h2"
+				fontWeight="bold"
+				space="mb-8"
+				align="text-center"
+				className="basis-full">
 				Register
 			</UITypography>
 			<form onSubmit={handleSubmit(onSubmit)} className="w-64 mx-auto mb-12">
@@ -55,7 +60,9 @@ export const RegisterForm: React.FC = () => {
 						</p>
 					)}
 				/>
-				<button type="submit"> Send</button>
+				<button type="submit" className="bg-blue-500 text-white block w-full rounded-sm p-2">
+					Send
+				</button>
 			</form>
 		</div>
 	);
