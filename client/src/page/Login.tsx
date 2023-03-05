@@ -1,7 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { LoginForm } from '../features';
 
 export const Login: React.FC = () => {
-  return (
-    <div>Login</div>
-  )
-}
+	return (
+		<div>
+			<LoginForm />
+		</div>
+	);
+};
