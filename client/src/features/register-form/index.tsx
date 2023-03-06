@@ -32,11 +32,28 @@ export const RegisterForm: React.FC = () => {
 					id="userNameField"
 					placeholder="User Name"
 					className="block w-full mb-4"
-					{...register('fullName', { required: 'Please enter your username.' })}
+					{...register('userName', { required: 'Please enter your username.' })}
 				/>
 				<ErrorMessage
 					errors={errors}
-					name="fullName"
+					name="userName"
+					render={({ message }) => (
+						<p className="text-red-700 flex gap-1 -mt-4 mb-2 items-center mt">
+							<FontAwesomeIcon icon={['fas', 'circle-exclamation']} />
+							{message}
+						</p>
+					)}
+				/>
+				<UIInput
+					type="text"
+					id="userEmailField"
+					placeholder="User Email"
+					className="block w-full mb-4"
+					{...register('userEmail', { required: 'Please enter your email.' })}
+				/>
+				<ErrorMessage
+					errors={errors}
+					name="userEmail"
 					render={({ message }) => (
 						<p className="text-red-700 flex gap-1 -mt-4 mb-2 items-center mt">
 							<FontAwesomeIcon icon={['fas', 'circle-exclamation']} />
