@@ -4,7 +4,7 @@ import { fetchRegister } from './asyncAuth';
 
 const initialState: AuthSliceProps = {
 	auth: null,
-	errorString: null,
+	errorString: '',
 };
 
 export const authSlice = createSlice({
@@ -13,10 +13,10 @@ export const authSlice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(fetchRegister.pending, (state) => {
-			state.errorString = null;
+			state.errorString = '';
 		});
 		builder.addCase(fetchRegister.fulfilled, (state) => {
-			state.errorString = null;
+			state.errorString = '';
 		});
 		builder.addCase(fetchRegister.rejected, (state, action) => {
 			state.errorString = action.payload;
