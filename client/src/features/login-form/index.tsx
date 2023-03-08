@@ -1,20 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { UIInput, UITypography } from '../../components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../redux/slices/auth/selector';
+import { fetchLogin } from '../../redux/slices/auth/asyncAuth';
+import { LoginFormValue } from '../../common';
 
 export const LoginForm: React.FC = () => {
+	const dispatch = useAppDispatch();
+	const { errorString, auth } = useSelector(authSelector);
+	const navigate = useNavigate();
 	const {
 		register,
 		reset,
 		handleSubmit,
-		formState: { errors, isValid },
-	} = useForm();
-	const onSubmit = (data: any) => {
-		console.log(data);
+		formState: { errors, isSubmitSuccessful },
+	} = useForm<LoginFormValue>();
+	const onSubmit = (data: LoginFormValue) => {
+		dispatch(fetchLogin(data));
+		if (isSubmitSuccessful) {
+			reset({ userName: '', password: '' });
+		}
 	};
+
+	useEffect(() => {
+		if (auth !== null && errorString === '') {
+			navigate('/');
+		}
+	}, [auth, errorString, navigate]);
 
 	return (
 		<div className="flex flex-wrap py-7 mx-auto bg-white/5 bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg max-w-xl">
@@ -66,6 +83,7 @@ export const LoginForm: React.FC = () => {
 					className="bg-sky-600 hover:bg-sky-700 ease-in duration-300 text-white block w-full rounded-sm p-2 mb-2">
 					Login
 				</button>
+				<span className="text-red-700">{errorString as React.ReactNode}</span>
 				<p className="text-white">
 					Dont have an account?
 					<Link to="/register" className="text-sky-600 ml-1">

@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { registerValidator } from './validations.js';
+import { loginValidator, registerValidator } from './validations.js';
 import { handleValidationErrors } from './utils/index.js';
-import { register } from './controllers/UserController.js';
+import { register, login } from './controllers/UserController.js';
 
 //.env config
 dotenv.config({ debug: true });
@@ -21,6 +21,7 @@ mongoose
 //Routes
 //Auth
 app.post('/auth/register', registerValidator, handleValidationErrors, register);
+app.post('/auth/login', loginValidator, handleValidationErrors, login);
 
 app.listen(process.env.PORT || 4040, (err) => {
 	if (err) {

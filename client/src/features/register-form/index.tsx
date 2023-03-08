@@ -13,7 +13,6 @@ import { settingsSelector } from '../../redux/slices/settings/selector';
 
 export const RegisterForm: React.FC = () => {
 	const dispatch = useAppDispatch();
-	const { isLoaded } = useSelector(settingsSelector);
 	const { errorString } = useSelector(authSelector);
 	const navigate = useNavigate();
 	const {
@@ -26,7 +25,6 @@ export const RegisterForm: React.FC = () => {
 		dispatch(fetchRegister(data));
 		if (isSubmitSuccessful) {
 			reset({ userName: '', userEmail: '', password: '' });
-			navigate('/login');
 		}
 	};
 

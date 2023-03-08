@@ -11,7 +11,7 @@ export type AuthProps = {
 };
 
 export interface LoginFormValue {
-	userEmail: '';
+	userName: '';
 	password: string;
 }
 

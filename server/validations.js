@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 export const loginValidator = [
-	body('userEmail', 'Email format is incorrect!').isEmail(),
+	body('userName', 'Name format is incorrect!').isLength({ min: 3 }),
 	body('password', 'The password must be at least 5 characters long!').isLength({ min: 5 }),
 ];
 

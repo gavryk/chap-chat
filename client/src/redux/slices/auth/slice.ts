@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthSliceProps } from '../../../common/interfaces/authTypes';
-import { fetchRegister } from './asyncAuth';
+import { fetchLogin, fetchRegister } from './asyncAuth';
 
 const initialState: AuthSliceProps = {
 	auth: null,
@@ -19,6 +19,18 @@ export const authSlice = createSlice({
 			state.errorString = '';
 		});
 		builder.addCase(fetchRegister.rejected, (state, action) => {
+			state.errorString = action.payload;
+		});
+		builder.addCase(fetchLogin.pending, (state) => {
+			state.auth = null;
+			state.errorString = '';
+		});
+		builder.addCase(fetchLogin.fulfilled, (state, action) => {
+			state.auth = action.payload as any;
+			state.errorString = '';
+		});
+		builder.addCase(fetchLogin.rejected, (state, action) => {
+			state.auth = null;
 			state.errorString = action.payload;
 		});
 	},
