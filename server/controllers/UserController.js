@@ -20,12 +20,17 @@ export const register = async (req, res) => {
 		//save info in db
 		const user = await doc.save();
 
-		const token = jwt.sign({ _id: user._id, userName }, 'secret_id', { expiresIn: '30d' });
+		jwt.sign({ _id: user._id, userName }, 'secret_id', { expiresIn: '30d' }, (err, token) => {
+			if (err) throw err;
+			res.cookie('token', token, { sameSite: 'none', secure: true }).status(201).json({
+				id: user._id,
+			});
+		});
 
-		//Get all data without hash
-		const { passwordHash, ...userData } = user._doc;
-		//Return information
-		res.json({ ...userData, token });
+		// //Get all data without hash
+		// const { passwordHash, ...userData } = user._doc;
+		// //Return information
+		// res.json({ ...userData });
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({

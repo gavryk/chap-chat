@@ -20,18 +20,15 @@ export const RegisterForm: React.FC = () => {
 		register,
 		reset,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isSubmitSuccessful },
 	} = useForm<RegisterFormValues>();
 	const onSubmit = (data: RegisterFormValues) => {
 		dispatch(fetchRegister(data));
-	};
-
-	useEffect(() => {
-		if (errorString === '' && isLoaded === 'success') {
+		if (isSubmitSuccessful) {
 			reset({ userName: '', userEmail: '', password: '' });
 			navigate('/login');
 		}
-	}, [isLoaded, errorString]);
+	};
 
 	return (
 		<div className="flex flex-wrap py-7 mx-auto bg-white/5 bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg max-w-xl">
