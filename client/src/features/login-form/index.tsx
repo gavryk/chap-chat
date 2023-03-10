@@ -43,7 +43,7 @@ export const LoginForm: React.FC = () => {
 				className="basis-full text-white">
 				Login
 			</UITypography>
-			<form onSubmit={handleSubmit(onSubmit)} className="w-2/4 mx-auto mb-12">
+			<form onSubmit={handleSubmit(onSubmit)} className="sm:w-2/4 md:w-3/4 xl:w-1/2 mx-auto mb-12">
 				<UIInput
 					type="text"
 					id="userNameField"

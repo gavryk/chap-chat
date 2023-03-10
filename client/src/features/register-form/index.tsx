@@ -1,35 +1,63 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { UIInput, UITypography } from '../../components';
+import { UIAvatarUploader, UIInput, UITypography } from '../../components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/slices/auth/selector';
-import { RegisterFormValues } from '../../common';
+import { ImageUpload, RegisterFormValues } from '../../common';
 import { fetchRegister } from '../../redux/slices/auth/asyncAuth';
-import { settingsSelector } from '../../redux/slices/settings/selector';
+import { setLoading } from '../../redux/slices/settings/slice';
+import axios from '../../axios';
 
 export const RegisterForm: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const { errorString } = useSelector(authSelector);
 	const navigate = useNavigate();
+	const [userImage, setUImage] = useState('');
+	const [file, setFile] = useState<ImageUpload>({
+		file: null,
+		imagePreviewUrl: '',
+		fileLoaded: false,
+	});
+
+	const setUserImage = async (imageFile: ImageUpload) => {
+		setFile(imageFile);
+		dispatch(setLoading('loading'));
+		try {
+			const { data } = await axios.post(`/upload`, imageFile.file);
+			setUImage(data.url);
+			dispatch(setLoading('success'));
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	const {
 		register,
 		reset,
 		handleSubmit,
 		formState: { errors, isSubmitSuccessful },
 	} = useForm<RegisterFormValues>();
-	const onSubmit = (data: RegisterFormValues) => {
-		dispatch(fetchRegister(data));
-		if (isSubmitSuccessful) {
-			reset({ userName: '', userEmail: '', password: '' });
-		}
+	const onSubmit = async (data: RegisterFormValues) => {
+		await dispatch(fetchRegister({ ...data, avatarUrl: userImage })).then((data) => {
+			const status = data.meta.requestStatus;
+			if (status === 'fulfilled') {
+				reset({ userName: '', userEmail: '', password: '' });
+				setFile({
+					file: null,
+					imagePreviewUrl: '',
+					fileLoaded: false,
+				});
+				navigate('/login');
+			}
+		});
 	};
 
 	return (
-		<div className="flex flex-wrap py-7 mx-auto bg-white/5 bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg max-w-xl">
+		<div className="flex flex-wrap flex-col py-7 mx-auto bg-white/5 bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg max-w-xl">
 			<UITypography
 				variant="h2"
 				fontWeight="bold"
@@ -38,7 +66,8 @@ export const RegisterForm: React.FC = () => {
 				className="basis-full text-white">
 				Register
 			</UITypography>
-			<form onSubmit={handleSubmit(onSubmit)} className="w-2/4 mx-auto mb-12">
+			<UIAvatarUploader onChange={setUserImage} label="upload image" id="file" file={file} avatar />
+			<form onSubmit={handleSubmit(onSubmit)} className="sm:w-2/4 w-3/4 mx-auto mb-12">
 				<UIInput
 					type="text"
 					id="userNameField"
