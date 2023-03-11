@@ -12,16 +12,16 @@ import { LoginFormValue } from '../../common';
 
 export const LoginForm: React.FC = () => {
 	const dispatch = useAppDispatch();
-	const { errorString, auth } = useSelector(authSelector);
+	const { errorString } = useSelector(authSelector);
 	const navigate = useNavigate();
 	const {
 		register,
 		reset,
 		handleSubmit,
-		formState: { errors, isSubmitSuccessful },
+		formState: { errors },
 	} = useForm<LoginFormValue>();
 	const onSubmit = async (data: LoginFormValue) => {
-		await dispatch(fetchLogin(data)).then((data) => {
+		await dispatch(fetchLogin(data)).then((data: any) => {
 			const status = data.meta.requestStatus;
 			if (status === 'fulfilled') {
 				reset({ userName: '', password: '' });

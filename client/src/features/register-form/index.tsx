@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { UIAvatarUploader, UIInput, UITypography } from '../../components';
@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/slices/auth/selector';
 import { ImageUpload, RegisterFormValues } from '../../common';
 import { fetchRegister } from '../../redux/slices/auth/asyncAuth';
-import { setLoading } from '../../redux/slices/settings/slice';
 import axios from '../../axios';
 
 export const RegisterForm: React.FC = () => {
@@ -37,7 +36,7 @@ export const RegisterForm: React.FC = () => {
 		register,
 		reset,
 		handleSubmit,
-		formState: { errors, isSubmitSuccessful },
+		formState: { errors },
 	} = useForm<RegisterFormValues>();
 	const onSubmit = async (data: RegisterFormValues) => {
 		await dispatch(fetchRegister({ ...data, avatarUrl: userImage })).then((data) => {

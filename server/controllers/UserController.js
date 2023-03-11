@@ -22,7 +22,7 @@ export const login = async (req, res) => {
 		}
 		const { passwordHash, ...userData } = user._doc;
 
-		const token = jwt.sign({ ...userData }, 'secret_id');
+		const token = jwt.sign({ ...userData }, 'secret_id', { expiresIn: '30d' });
 		return res
 			.cookie('access_token', token, { httpOnly: true, secure: true })
 			.status(200)
@@ -83,4 +83,7 @@ export const getProfile = (req, res) => {
 	} else {
 		res.status(401).json('no token');
 	}
+};
+export const logout = (req, res) => {
+	res.cookie('access_token', '', { sameSite: 'none', secure: true }).json('ok');
 };

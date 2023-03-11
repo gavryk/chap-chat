@@ -7,7 +7,7 @@ import multer from 'multer';
 import cookieParser from 'cookie-parser';
 import { loginValidator, registerValidator } from './validations.js';
 import { handleValidationErrors } from './utils/index.js';
-import { register, login, getProfile } from './controllers/UserController.js';
+import { register, login, getProfile, logout } from './controllers/UserController.js';
 
 //.env config
 dotenv.config({ debug: true });
@@ -47,6 +47,7 @@ app.post('/auth/register', registerValidator, handleValidationErrors, register);
 app.post('/auth/login', loginValidator, handleValidationErrors, login);
 //get profile
 app.get('/profile', getProfile);
+app.post('/logout', logout);
 
 //Upload Image Route
 app.post('/upload', upload.single('image'), (req, res) => {

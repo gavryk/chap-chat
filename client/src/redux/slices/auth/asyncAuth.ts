@@ -35,7 +35,15 @@ export const getProfile = createAsyncThunk(
 			const { iat, ...userData } = data;
 			return userData;
 		} catch (err: any) {
+			console.log(err);
 			return rejectWithValue(err.response.data.message || err.response.data[0].msg);
 		}
 	},
 );
+export const logout = createAsyncThunk('auth/logout', async (params, { rejectWithValue }) => {
+	try {
+		await axios.post('/logout');
+	} catch (err: any) {
+		return rejectWithValue(err.response.data.message || err.response.data[0].msg);
+	}
+});
