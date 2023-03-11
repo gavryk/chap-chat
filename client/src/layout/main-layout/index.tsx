@@ -12,10 +12,13 @@ export const MainLayout: React.FC = () => {
 	return (
 		<div
 			className={`app h-screen bg-gradient-to-br from-black to-[#121286] hide-scrollbar flex items-center`}>
-			{isLoaded === 'loading' && <Loader />}
-			<div className="xl:container mx-auto">
-				<Outlet />
-			</div>
+			{isLoaded === 'loading' ? (
+				<Loader />
+			) : (
+				<div className="xl:container mx-auto">
+					<Outlet />
+				</div>
+			)}
 		</div>
 	);
 };
