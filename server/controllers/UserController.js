@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-
 import UserModel from '../models/User.js';
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -21,18 +20,17 @@ export const login = async (req, res) => {
 				message: 'Invalid login or password',
 			});
 		}
-
-		jwt.sign({ _id: user._id, userName }, 'secret_id', { expiresIn: '30d' }, (err, token) => {
-			if (err) throw err;
-			res.cookie('token', token, { sameSite: 'none', secure: true }).json({
-				id: user._id,
-			});
-		});
-
-		//Get all data without hash
 		const { passwordHash, ...userData } = user._doc;
-		//Return information
-		res.json(userData);
+
+		const token = jwt.sign({ _id: user._id, userName }, 'secret_id');
+		return res
+			.cookie('access_token', token, { httpOnly: true, secure: true })
+			.status(200)
+			.json({ ...userData });
+		// //Get all data without hash
+		// const { passwordHash, ...userData } = user._doc;
+		// //Return information
+		// res.json(userData);
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({
@@ -44,9 +42,6 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
 	try {
 		const { userName, userEmail, avatarUrl, password } = req.body;
-		//hash password
-		const salt = await bcrypt.genSalt(10);
-		const hash = await bcrypt.hash(password, salt);
 		//create data doc
 		const oldUserEmail = await UserModel.findOne({ userEmail });
 		const oldUserName = await UserModel.findOne({ userName });
@@ -54,6 +49,10 @@ export const register = async (req, res) => {
 		if (oldUserEmail || oldUserName) {
 			return res.status(400).send({ message: 'User already exists' });
 		}
+		//hash password
+		const salt = await bcrypt.genSalt(10);
+		const hash = await bcrypt.hash(password, salt);
+
 		const doc = new UserModel({
 			userEmail,
 			userName,
@@ -65,20 +64,27 @@ export const register = async (req, res) => {
 
 		jwt.sign({ _id: user._id, userName }, 'secret_id', { expiresIn: '30d' }, (err, token) => {
 			if (err) throw err;
-			res.cookie('token', token, { sameSite: 'none', secure: true }).status(201).json({
+			res.cookie('access_token', token, { sameSite: 'none', secure: true }).status(201).json({
 				id: user._id,
 			});
 		});
-
-		//Get all data without hash
-		const { passwordHash, ...userData } = user._doc;
-		//Return information
-		res.json({ ...userData });
 	} catch (err) {
 		console.log(err);
 
 		res.status(500).json({
 			message: 'Failed to register!',
 		});
+	}
+};
+
+export const getProfile = (req, res) => {
+	const token = req.cookies?.access_token;
+	if (token) {
+		jwt.verify(token, 'secret_id', {}, (err, userData) => {
+			if (err) throw err;
+			res.json(userData);
+		});
+	} else {
+		res.status(401).json('no token');
 	}
 };

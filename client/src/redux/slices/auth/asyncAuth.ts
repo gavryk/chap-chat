@@ -26,3 +26,16 @@ export const fetchLogin = createAsyncThunk(
 		}
 	},
 );
+
+export const getProfile = createAsyncThunk(
+	'auth/fetchProfile',
+	async (params, { rejectWithValue }) => {
+		try {
+			const { data } = await axios.get('/profile');
+			return data.user;
+		} catch (err: any) {
+			console.log(err);
+			return rejectWithValue(err.response.data.message || err.response.data[0].msg);
+		}
+	},
+);

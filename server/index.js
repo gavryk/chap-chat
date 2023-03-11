@@ -7,7 +7,7 @@ import multer from 'multer';
 import cookieParser from 'cookie-parser';
 import { loginValidator, registerValidator } from './validations.js';
 import { handleValidationErrors } from './utils/index.js';
-import { register, login } from './controllers/UserController.js';
+import { register, login, getProfile } from './controllers/UserController.js';
 
 //.env config
 dotenv.config({ debug: true });
@@ -19,7 +19,12 @@ mongoose
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+	cors({
+		credentials: true,
+		origin: process.env.CLIENT_URL,
+	}),
+);
 app.use('/uploads', express.static('/uploads'));
 
 //Upload Storage
@@ -40,6 +45,8 @@ const upload = multer({ storage });
 //Auth
 app.post('/auth/register', registerValidator, handleValidationErrors, register);
 app.post('/auth/login', loginValidator, handleValidationErrors, login);
+//get profile
+app.get('/profile', getProfile);
 
 //Upload Image Route
 app.post('/upload', upload.single('image'), (req, res) => {
