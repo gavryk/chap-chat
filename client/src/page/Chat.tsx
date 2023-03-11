@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UITypography } from '../components';
 import { logout } from '../redux/slices/auth/asyncAuth';
 import { authSelector } from '../redux/slices/auth/selector';
@@ -8,13 +8,18 @@ import { useAppDispatch } from '../redux/store';
 
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const { auth } = useSelector(authSelector);
 
 	const logOut = () => {
 		dispatch(logout());
 	};
 
-	return auth ? (
+	if (!auth) {
+		navigate('/login', { replace: true });
+	}
+
+	return (
 		<div>
 			<UITypography variant="h1" fontWeight="semibold" space="mb-0">
 				Chat
@@ -23,18 +28,5 @@ export const Chat: React.FC = () => {
 				Logout
 			</button>
 		</div>
-	) : (
-		<>
-			<UITypography variant="h2" fontWeight="semiBold" className="text-cyan-50 text-center">
-				Please log in to chat
-			</UITypography>
-			<div className="flex justify-center">
-				<Link
-					to="/login"
-					className="text-white transition ease-in-out duration-700 bg-lime-600 px-10 border border-transparent py-3 rounded-lg bg-opacity-80 hover:bg-transparent hover:border-white">
-					Login
-				</Link>
-			</div>
-		</>
 	);
 };
