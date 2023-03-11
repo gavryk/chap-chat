@@ -1,9 +1,10 @@
+import { fetchLogin, getProfile } from './../auth/asyncAuth';
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { SettingsSliceTypes } from '../../../common';
 import { fetchRegister } from '../auth/asyncAuth';
 
 const initialState: SettingsSliceTypes = {
-	isLoaded: 'loading',
+	isLoaded: 'success',
 };
 
 export const settingsSlice = createSlice({
@@ -15,15 +16,24 @@ export const settingsSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		builder.addMatcher(isAnyOf(fetchRegister.pending), (state) => {
-			state.isLoaded = 'loading';
-		});
-		builder.addMatcher(isAnyOf(fetchRegister.fulfilled), (state, action) => {
-			state.isLoaded = 'success';
-		});
-		builder.addMatcher(isAnyOf(fetchRegister.rejected), (state) => {
-			state.isLoaded = 'error';
-		});
+		builder.addMatcher(
+			isAnyOf(fetchRegister.pending, fetchLogin.pending, getProfile.pending),
+			(state) => {
+				state.isLoaded = 'loading';
+			},
+		);
+		builder.addMatcher(
+			isAnyOf(fetchRegister.fulfilled, fetchLogin.fulfilled, getProfile.fulfilled),
+			(state, action) => {
+				state.isLoaded = 'success';
+			},
+		);
+		builder.addMatcher(
+			isAnyOf(fetchRegister.rejected, fetchLogin.rejected, getProfile.rejected),
+			(state) => {
+				state.isLoaded = 'success';
+			},
+		);
 	},
 });
 

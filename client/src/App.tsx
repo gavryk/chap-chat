@@ -12,9 +12,11 @@ import { useAppDispatch } from './redux/store';
 const App = () => {
 	const dispatch = useAppDispatch();
 	library.add(fas);
+
 	useEffect(() => {
 		dispatch(getProfile());
 	}, [dispatch]);
+
 	return (
 		<Routes>
 			<Route path="/" element={<MainLayout />}>

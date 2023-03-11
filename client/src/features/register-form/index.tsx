@@ -25,11 +25,9 @@ export const RegisterForm: React.FC = () => {
 
 	const setUserImage = async (imageFile: ImageUpload) => {
 		setFile(imageFile);
-		dispatch(setLoading('loading'));
 		try {
 			const { data } = await axios.post(`/upload`, imageFile.file);
 			setUImage(data.url);
-			dispatch(setLoading('success'));
 		} catch (err) {
 			console.log(err);
 		}

@@ -22,15 +22,11 @@ export const login = async (req, res) => {
 		}
 		const { passwordHash, ...userData } = user._doc;
 
-		const token = jwt.sign({ _id: user._id, userName }, 'secret_id');
+		const token = jwt.sign({ ...userData }, 'secret_id');
 		return res
 			.cookie('access_token', token, { httpOnly: true, secure: true })
 			.status(200)
 			.json({ ...userData });
-		// //Get all data without hash
-		// const { passwordHash, ...userData } = user._doc;
-		// //Return information
-		// res.json(userData);
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({

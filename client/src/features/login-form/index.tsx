@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { UIInput, UITypography } from '../../components';
@@ -20,18 +20,15 @@ export const LoginForm: React.FC = () => {
 		handleSubmit,
 		formState: { errors, isSubmitSuccessful },
 	} = useForm<LoginFormValue>();
-	const onSubmit = (data: LoginFormValue) => {
-		dispatch(fetchLogin(data));
-		if (isSubmitSuccessful) {
-			reset({ userName: '', password: '' });
-		}
+	const onSubmit = async (data: LoginFormValue) => {
+		await dispatch(fetchLogin(data)).then((data) => {
+			const status = data.meta.requestStatus;
+			if (status === 'fulfilled') {
+				reset({ userName: '', password: '' });
+				navigate('/');
+			}
+		});
 	};
-
-	useEffect(() => {
-		if (auth !== null && errorString === '') {
-			navigate('/');
-		}
-	}, [auth, errorString, navigate]);
 
 	return (
 		<div className="flex flex-wrap py-7 mx-auto bg-white/5 bg-opacity-80 backdrop-blur-sm animate-slideup rounded-lg max-w-xl">
