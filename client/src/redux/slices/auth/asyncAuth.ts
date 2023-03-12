@@ -33,8 +33,7 @@ export const getProfile = createAsyncThunk(
 	async (params, { rejectWithValue }) => {
 		try {
 			const { data } = await axios.get('/profile');
-			const { iat, ...userData } = data;
-			return userData;
+			return data;
 		} catch (err: any) {
 			return rejectWithValue('');
 		}
