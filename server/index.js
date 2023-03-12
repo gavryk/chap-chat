@@ -6,7 +6,7 @@ import cors from 'cors';
 import multer from 'multer';
 import cookieParser from 'cookie-parser';
 import { loginValidator, registerValidator } from './validations.js';
-import { handleValidationErrors } from './utils/index.js';
+import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
 
 //.env config
@@ -46,7 +46,7 @@ const upload = multer({ storage });
 app.post('/auth/register', registerValidator, handleValidationErrors, register);
 app.post('/auth/login', loginValidator, handleValidationErrors, login);
 //get profile
-app.get('/profile', getProfile);
+app.get('/profile', checkAuth, getProfile);
 app.post('/logout', logout);
 
 //Upload Image Route

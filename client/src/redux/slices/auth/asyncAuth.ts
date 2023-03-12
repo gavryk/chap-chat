@@ -36,7 +36,7 @@ export const getProfile = createAsyncThunk(
 			const { iat, ...userData } = data;
 			return userData;
 		} catch (err: any) {
-			return rejectWithValue(err.response.data.message || err.response.data[0].msg);
+			return rejectWithValue('');
 		}
 	},
 );
