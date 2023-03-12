@@ -1,3 +1,4 @@
+import { AuthProps } from './../../../common/interfaces/authTypes';
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthSliceProps } from '../../../common/interfaces/authTypes';
 import { fetchLogin, fetchRegister, getProfile, logout } from './asyncAuth';
@@ -34,7 +35,7 @@ export const authSlice = createSlice({
 			state.errorString = action.payload;
 		});
 		builder.addCase(getProfile.pending, (state) => {
-			state.auth = null;
+			state.auth = {} as AuthProps;
 			state.errorString = '';
 		});
 		builder.addCase(getProfile.fulfilled, (state, action) => {

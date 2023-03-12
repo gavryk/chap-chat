@@ -2,7 +2,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { MainLayout } from './layout';
+import { MainLayout, PrivateRoute } from './layout';
 import { Chat } from './page/Chat';
 import { Login } from './page/Login';
 import { Register } from './page/Register';
@@ -20,7 +20,9 @@ const App = () => {
 	return (
 		<Routes>
 			<Route path="/" element={<MainLayout />}>
-				<Route path="" element={<Chat />} />
+				<Route element={<PrivateRoute />}>
+					<Route path="" element={<Chat />} />
+				</Route>
 				<Route path="/register" element={<Register />} />
 				<Route path="/login" element={<Login />} />
 			</Route>

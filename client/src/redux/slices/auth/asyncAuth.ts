@@ -1,3 +1,4 @@
+import { redirect } from 'react-router-dom';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../../axios';
 import { LoginFormValue, RegisterFormValues } from '../../../common';
@@ -35,7 +36,6 @@ export const getProfile = createAsyncThunk(
 			const { iat, ...userData } = data;
 			return userData;
 		} catch (err: any) {
-			console.log(err);
 			return rejectWithValue(err.response.data.message || err.response.data[0].msg);
 		}
 	},
