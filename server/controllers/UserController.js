@@ -59,7 +59,7 @@ export const register = async (req, res) => {
 		//save info in db
 		const user = await doc.save();
 
-		jwt.sign({ _id: user._id, userData }, 'secret_id', { expiresIn: '30d' }, (err, token) => {
+		jwt.sign({ _id: user._id }, 'secret_id', { expiresIn: '30d' }, (err, token) => {
 			if (err) throw err;
 			res.cookie('access_token', token, { sameSite: 'none', secure: true }).status(201).json({
 				id: user._id,
