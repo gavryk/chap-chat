@@ -48,7 +48,7 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 				{!file?.fileLoaded ? (
 					<div className="relative cursor-pointer">
 						{label && (
-							<UILabel htmlFor={id ? id : ''}>
+							<UILabel htmlFor={id ? id : ''} className="absolute cursor-pointer w-full h-full">
 								<FontAwesomeIcon
 									icon={['fas', 'plus-circle']}
 									color="#fff"

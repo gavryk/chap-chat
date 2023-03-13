@@ -60,7 +60,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
 });
 app.delete('/upload/:name', (req, res) => {
 	const name = req.params.name;
-	fs.unlink(`./uploads/${name}`, (err) => {
+	fs.unlinkSync(`./uploads/${name}`, (err) => {
 		if (err) throw err;
 		console.log('File deleted');
 	});
