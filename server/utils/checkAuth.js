@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export default (req, res, next) => {
-	const token = req.cookies?.access_token;
+	const token = req.cookies?.access_token.replace(/Bearer\s?/, '');
 
 	if (token) {
 		try {

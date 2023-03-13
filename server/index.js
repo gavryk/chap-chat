@@ -51,8 +51,18 @@ app.post('/logout', logout);
 
 //Upload Image Route
 app.post('/upload', upload.single('image'), (req, res) => {
-	res.json({
-		url: `/uploads/${req.file.filename}`,
+	const { file } = req;
+	if (file) {
+		res.json({
+			url: `/uploads/${req.file.filename}`,
+		});
+	}
+});
+app.delete('/upload/:name', (req, res) => {
+	const name = req.params.name;
+	fs.unlink(`./uploads/${name}`, (err) => {
+		if (err) throw err;
+		console.log('File deleted');
 	});
 });
 

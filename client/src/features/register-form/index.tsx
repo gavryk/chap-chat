@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { Loader, UIAvatarUploader, UIInput, UITypography } from '../../components';
@@ -26,13 +26,23 @@ export const RegisterForm: React.FC = () => {
 
 	const setUserImage = async (imageFile: ImageUpload) => {
 		setFile(imageFile);
-		try {
-			const { data } = await axios.post(`/upload`, imageFile.file);
-			setUImage(data.url);
-		} catch (err) {
-			console.log(err);
+		if (imageFile.file) {
+			try {
+				const { data } = await axios.post(`/upload`, imageFile.file);
+				setUImage(data.url);
+			} catch (err) {
+				console.log(err);
+			}
+		} else {
+			setUImage('');
+			const fileUrl = userImage.replace('/uploads/', '');
+			axios.delete(`/upload/${fileUrl}`);
 		}
 	};
+
+	useEffect(() => {
+		console.log(userImage);
+	}, [userImage]);
 
 	const {
 		register,
