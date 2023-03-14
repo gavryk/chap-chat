@@ -1,20 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { UIInput, UITypography } from '../components';
-import { logout } from '../redux/slices/auth/asyncAuth';
-import { useAppDispatch } from '../redux/store';
+import { AdminBox } from '../widgets';
 
 export const Chat: React.FC = () => {
-	const dispatch = useAppDispatch();
-
-	const logOut = () => {
-		dispatch(logout());
-	};
-
 	return (
 		<div className="flex w-full">
-			<div className="bg-blue-100 w-1/4">
+			<div className="bg-blue-100 w-1/4 grid grid-rows-[1fr_auto] overflow-auto relative">
 				<UITypography variant="h3">Contacts</UITypography>
+				<AdminBox />
 			</div>
 			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-auto relative">
 				<div className="p-4">

@@ -1,5 +1,6 @@
 import express from 'express';
 import * as fs from 'fs';
+import path from 'path';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
@@ -9,6 +10,7 @@ import { loginValidator, registerValidator } from './validations.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
 
+const __dirname = path.resolve();
 //.env config
 dotenv.config({ debug: true });
 mongoose
@@ -25,7 +27,7 @@ app.use(
 		origin: process.env.CLIENT_URL,
 	}),
 );
-app.use('/uploads', express.static('/uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //Upload Storage
 const storage = multer.diskStorage({
