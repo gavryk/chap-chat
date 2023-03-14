@@ -51,7 +51,9 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 									icon={['fas', 'plus-circle']}
 									color="#fff"
 									size="2xl"
-									className="absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 cursor-pointer"
+									className={`absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 cursor-pointer ${
+										!loadImage && 'opacity-10'
+									}`}
 								/>
 							</UILabel>
 						)}
@@ -85,14 +87,16 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 							}`}>
 							<img src={file?.imagePreviewUrl as string} alt={file?.file?.name as string} />
 						</div>
-						<div className="cursor-pointer " onClick={removeImage}>
-							<FontAwesomeIcon
-								icon={['fas', 'remove']}
-								color="red"
-								size="2xs"
-								className="absolute top-2 right-1"
-							/>
-						</div>
+						{loadImage && (
+							<div className="cursor-pointer " onClick={removeImage}>
+								<FontAwesomeIcon
+									icon={['fas', 'remove']}
+									color="red"
+									size="2xs"
+									className="absolute top-2 right-1"
+								/>
+							</div>
+						)}
 					</>
 				)}
 				{!loadImage && <AvatarLoader />}

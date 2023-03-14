@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { Loader, UIAvatarUploader, UIInput, UITypography } from '../../components';
@@ -44,10 +44,6 @@ export const RegisterForm: React.FC = () => {
 			});
 		}
 	};
-
-	useEffect(() => {
-		console.log(userImageLoader);
-	}, [userImageLoader]);
 
 	const {
 		register,
