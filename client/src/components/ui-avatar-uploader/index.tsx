@@ -3,8 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import avatarHolder from '../../assets/images/avatar-holder.jpg';
 import { InputUploadProps } from '../../common';
 import { UILabel } from '../ui-label';
-import { useAppDispatch } from '../../redux/store';
-import { setLoading } from '../../redux/slices/settings/slice';
+import { AvatarLoader } from '../avatar-loader';
 
 export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadProps>(
 	(
@@ -21,11 +20,11 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 			accept = 'image/*',
 			multiple,
 			file,
+			loadImage,
 			avatar,
 		},
 		ref,
 	) => {
-		const dispatch = useAppDispatch();
 		const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 			if (e.target.files && e.target.files[0]) {
 				let image = e.target.files[0];
@@ -41,7 +40,6 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 
 		const removeImage = () => {
 			onChange({ file: null, imagePreviewUrl: '', fileLoaded: false });
-			dispatch(setLoading('success'));
 		};
 		return (
 			<div className="flex items-center justify-center sm:w-1/5 w-1/4 mb-6 mx-auto relative">
@@ -58,7 +56,7 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 							</UILabel>
 						)}
 						{avatar && (
-							<div className="rounded-full overflow-hidden">
+							<div className={`rounded-full overflow-hidden ${!loadImage && 'opacity-60'}`}>
 								<img src={avatarHolder} alt="avatarHolder" />
 							</div>
 						)}
@@ -75,12 +73,16 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 							accept={accept}
 							multiple={multiple}
 							value=""
+							disabled={!loadImage}
 						/>
 						{error && <span className="text-red-700">{error}</span>}
 					</div>
 				) : (
 					<>
-						<div className="rounded-full overflow-hidden relative aspect-squere w-full h-28">
+						<div
+							className={`rounded-full overflow-hidden relative aspect-squere w-full h-28 ${
+								!loadImage && 'opacity-60'
+							}`}>
 							<img src={file?.imagePreviewUrl as string} alt={file?.file?.name as string} />
 						</div>
 						<div className="cursor-pointer " onClick={removeImage}>
@@ -93,6 +95,7 @@ export const UIAvatarUploader = React.forwardRef<HTMLInputElement, InputUploadPr
 						</div>
 					</>
 				)}
+				{!loadImage && <AvatarLoader />}
 			</div>
 		);
 	},

@@ -11,6 +11,7 @@ export interface InputUploadProps {
 	accept?: string;
 	multiple?: boolean;
 	file: ImageUpload;
+	loadImage: boolean;
 	avatar?: boolean;
 }
 

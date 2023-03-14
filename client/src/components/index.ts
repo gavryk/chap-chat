@@ -4,3 +4,4 @@ export * from './ui-label';
 export * from './ui-avatar-uploader';
 export * from './loader';
 export * from './ui-user';
+export * from './avatar-loader';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { Loader, UIAvatarUploader, UIInput, UITypography } from '../../components';
@@ -18,6 +18,7 @@ export const RegisterForm: React.FC = () => {
 	const { isLoaded } = useSelector(settingsSelector);
 	const navigate = useNavigate();
 	const [userImage, setUImage] = useState('');
+	const [userImageLoader, setUImageLoader] = useState(true);
 	const [file, setFile] = useState<ImageUpload>({
 		file: null,
 		imagePreviewUrl: '',
@@ -26,19 +27,27 @@ export const RegisterForm: React.FC = () => {
 
 	const setUserImage = async (imageFile: ImageUpload) => {
 		setFile(imageFile);
+		setUImageLoader(false);
 		if (imageFile.file) {
 			try {
 				const { data } = await axios.post(`/upload`, imageFile.file);
 				setUImage(data.url);
+				setUImageLoader(true);
 			} catch (err) {
 				console.log(err);
 			}
 		} else {
 			setUImage('');
 			const fileUrl = userImage.replace('/uploads/', '');
-			axios.delete(`/upload/${fileUrl}`);
+			await axios.delete(`/upload/${fileUrl}`).then(() => {
+				setUImageLoader(true);
+			});
 		}
 	};
+
+	useEffect(() => {
+		console.log(userImageLoader);
+	}, [userImageLoader]);
 
 	const {
 		register,
@@ -78,6 +87,7 @@ export const RegisterForm: React.FC = () => {
 						label="upload image"
 						id="file"
 						file={file}
+						loadImage={userImageLoader}
 						avatar
 					/>
 					<form onSubmit={handleSubmit(onSubmit)} className="sm:w-2/4 w-3/4 mx-auto mb-12">

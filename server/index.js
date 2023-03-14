@@ -60,12 +60,18 @@ app.post('/upload', upload.single('image'), (req, res) => {
 		});
 	}
 });
-app.delete('/upload/:name', (req, res) => {
+app.delete('/upload/:name', async (req, res) => {
 	const name = req.params.name;
-	fs.unlinkSync(`./uploads/${name}`, (err) => {
-		if (err) throw err;
-		console.log('File deleted');
-	});
+	try {
+		fs.unlinkSync(`./uploads/${name}`, (err) => {
+			if (err) throw err;
+		});
+		res.json({
+			message: 'File Deleted',
+		});
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 app.listen(process.env.PORT || 4040, (err) => {

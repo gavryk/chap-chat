@@ -1,0 +1,27 @@
+.loader {
+	animation: load 1s linear infinite;
+	border: 0.5em dashed #555;
+	border-radius: 50%;
+	display: block;
+	height: 2em;
+	left: 37%;
+	margin: 0;
+	position: absolute;
+	top: 37%;
+	width: 2em;
+}
+.loader:after {
+	border: 0.5em solid #6cf;
+	border-radius: 50%;
+	bottom: 0.25em;
+	content: '';
+	left: 0;
+	position: absolute;
+	right: 0.25em;
+	top: 0;
+}
+@keyframes load {
+	100% {
+		transform: rotate(360deg);
+	}
+}
