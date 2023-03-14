@@ -10,7 +10,7 @@ export const MainLayout: React.FC = () => {
 			<div
 				className={`mx-auto ${
 					path !== 'login' && path !== 'register'
-						? 'bg-white bg-opacity-15 min-[1250px]:w-3/4 min-[576px]:w-5/6 min-[320px]:w-11/12 flex h-[94%] my-3 rounded-[15px]'
+						? 'bg-white bg-opacity-15 min-[1250px]:w-3/4 min-[576px]:w-5/6 min-[320px]:w-11/12 flex h-[96%] my-3 rounded-[15px] overflow-hidden'
 						: 'xl:container'
 				}`}>
 				<Outlet />

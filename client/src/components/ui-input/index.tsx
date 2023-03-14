@@ -9,6 +9,7 @@ interface InputProps {
 	type: React.HTMLInputTypeAttribute;
 	required?: InputHTMLAttributes<HTMLInputElement>['required'];
 	onBlur?: React.FocusEventHandler<HTMLInputElement>;
+	onFocus?: React.FocusEventHandler<HTMLInputElement>;
 	name?: string;
 	value?: string | number;
 	error?: string | boolean;
@@ -28,6 +29,7 @@ export const UIInput = React.forwardRef<HTMLInputElement, InputProps>(
 			type,
 			required,
 			onBlur,
+			onFocus,
 			name,
 			placeholder,
 			value,
@@ -56,9 +58,15 @@ export const UIInput = React.forwardRef<HTMLInputElement, InputProps>(
 					placeholder={placeholder}
 					onClick={onClick}
 					value={value}
-					className="w-full rounded-sm border p-2"
+					className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none w-full p-2.5 focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      ${
+				error &&
+				'invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+			}`}
 					ref={ref}
 					checked={checked}
+					onFocus={onFocus}
 				/>
 				{label && (type === 'radio' || type === 'checkbox') && (
 					<UILabel htmlFor={id ? id : ''}>{label}</UILabel>
