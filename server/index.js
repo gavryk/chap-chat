@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import multer from 'multer';
 import cookieParser from 'cookie-parser';
+import { WebSocketServer } from 'ws';
 import { loginValidator, registerValidator } from './validations.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
@@ -74,9 +75,12 @@ app.delete('/upload/:name', async (req, res) => {
 	}
 });
 
-app.listen(process.env.PORT || 4040, (err) => {
+const server = app.listen(process.env.PORT || 4040, (err) => {
 	if (err) {
 		return console.log(err);
 	}
 	console.log('Server is running!');
 });
+
+const ws = new WebSocketServer({ server });
+ws.on('connection', (connection) => {});

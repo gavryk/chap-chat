@@ -1,9 +1,20 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { UIInput, UITypography } from '../components';
 import { AdminBox } from '../widgets';
 
 export const Chat: React.FC = () => {
+	const [ws, setWs] = useState<any>(null);
+	useEffect(() => {
+		const socket = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
+		setWs(socket);
+		socket.addEventListener('message', handleMessage);
+	}, []);
+
+	const handleMessage = (e: any) => {
+		console.log('new message', e);
+	};
+
 	return (
 		<div className="flex w-full">
 			<div className="bg-blue-100 w-1/4 grid grid-rows-[1fr_auto] overflow-auto relative">

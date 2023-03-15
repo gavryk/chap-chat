@@ -1,4 +1,3 @@
-import { redirect } from 'react-router-dom';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../../axios';
 import { LoginFormValue, RegisterFormValues } from '../../../common';
