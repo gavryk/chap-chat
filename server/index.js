@@ -10,6 +10,7 @@ import { WebSocketServer } from 'ws';
 import { loginValidator, registerValidator } from './validations.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
+import { SocketConnection } from './controllers/ChatController.js';
 
 const __dirname = path.resolve();
 //.env config
@@ -82,14 +83,6 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 	console.log('Server is running!');
 });
 
+//Connect Socket
 const ws = new WebSocketServer({ server });
-ws.on('connection', (connection, req) => {
-	const cookie = req.headers.cookie;
-	if (cookie) {
-		const tokenCookieString = cookie.split(';').find((str) => str.startsWith('access_token='));
-		if (tokenCookieString) {
-			const token = tokenCookieString.split('=')[1];
-			console.log(token);
-		}
-	}
-});
+ws.on('connection', SocketConnection);

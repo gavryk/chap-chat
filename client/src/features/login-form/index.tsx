@@ -83,7 +83,7 @@ export const LoginForm: React.FC = () => {
 						/>
 						<button
 							type="submit"
-							className="bg-sky-600 hover:bg-sky-700 ease-in duration-300 text-white block w-full rounded-sm p-2 mb-2">
+							className="bg-sky-600 hover:bg-sky-700 ease-in duration-300 text-white block w-full rounded-lg p-2 mb-2">
 							Login
 						</button>
 						<span className="text-red-700">{errorString as React.ReactNode}</span>
