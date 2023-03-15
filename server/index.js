@@ -83,4 +83,13 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 });
 
 const ws = new WebSocketServer({ server });
-ws.on('connection', (connection) => {});
+ws.on('connection', (connection, req) => {
+	const cookie = req.headers.cookie;
+	if (cookie) {
+		const tokenCookieString = cookie.split(';').find((str) => str.startsWith('access_token='));
+		if (tokenCookieString) {
+			const token = tokenCookieString.split('=')[1];
+			console.log(token);
+		}
+	}
+});
