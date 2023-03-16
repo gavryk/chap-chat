@@ -12,6 +12,7 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
 import jwt from 'jsonwebtoken';
 import UserModel from './models/User.js';
+import { getAllPeople } from './controllers/ChatController.js';
 
 const __dirname = path.resolve();
 //.env config
@@ -53,6 +54,8 @@ app.post('/auth/login', loginValidator, handleValidationErrors, login);
 //get profile
 app.get('/profile', checkAuth, getProfile);
 app.post('/logout', logout);
+//Get People
+app.get('/people', getAllPeople);
 
 //Upload Image Route
 app.post('/upload', upload.single('image'), (req, res) => {
@@ -87,8 +90,6 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 //Connect Socket
 const ws = new WebSocketServer({ server });
 //Connected to WebSocket
-
-console.log(ws);
 ws.on('connection', async (connection, req) => {
 	function notifyAboutOnlinePeople() {
 		[...ws.clients].forEach((client) => {
@@ -119,6 +120,9 @@ ws.on('connection', async (connection, req) => {
 			}
 		}
 	}
+	connection.on('close', (data) => {
+		notifyAboutOnlinePeople();
+	});
 
 	notifyAboutOnlinePeople();
 });

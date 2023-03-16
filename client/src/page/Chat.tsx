@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from '../axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { UIInput, UITypography, UIUser } from '../components';
@@ -7,12 +8,14 @@ import { chatSelector } from '../redux/slices/chat/selector';
 import { setOnlinePeople, setWs } from '../redux/slices/chat/slice';
 import { useAppDispatch } from '../redux/store';
 import { AdminBox } from '../widgets';
+import { AuthProps } from '../common';
 
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const { auth } = useSelector(authSelector);
 	const { ws, online } = useSelector(chatSelector);
 	const [msg, setMsg] = useState('');
+	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
 
 	const conectToWs = () => {
 		const ws = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
@@ -32,6 +35,15 @@ export const Chat: React.FC = () => {
 		}
 	}, [auth]);
 
+	useEffect(() => {
+		axios.get('/people').then((res) => {
+			const offlinePeopleArr = res.data
+				.filter((p: any) => p._id !== auth?._id)
+				.filter((p: any) => online.every((user) => p._id !== user.userId));
+			setOfflinePeople(offlinePeopleArr);
+		});
+	}, [online]);
+
 	const handleMessage = (ev: any) => {
 		const messageData = JSON.parse(ev.data);
 		if ('online' in messageData) {
@@ -45,7 +57,10 @@ export const Chat: React.FC = () => {
 				<UITypography variant="h3">Contacts</UITypography>
 				<div className="p-4">
 					{online.map((user) => (
-						<UIUser online={true} {...user} />
+						<UIUser online={true} {...user} key={user.userId} />
+					))}
+					{offlinePeople?.map((u) => (
+						<UIUser {...u} key={u._id} />
 					))}
 				</div>
 				<AdminBox />
