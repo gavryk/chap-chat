@@ -10,7 +10,8 @@ import { WebSocketServer } from 'ws';
 import { loginValidator, registerValidator } from './validations.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
-import { SocketConnection } from './controllers/ChatController.js';
+import jwt from 'jsonwebtoken';
+import UserModel from './models/User.js';
 
 const __dirname = path.resolve();
 //.env config
@@ -85,4 +86,31 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 
 //Connect Socket
 const ws = new WebSocketServer({ server });
-ws.on('connection', SocketConnection);
+//Connected to WebSocket
+ws.on('connection', async (connection, req) => {
+	function notifyAboutOnlinePeople() {
+		[...ws.clients].forEach((client) => {
+			client.send(
+				JSON.stringify({
+					online: [...ws.clients].map((c) => ({ userId: c.userId, username: c.userName })),
+				}),
+			);
+		});
+	}
+
+	const cookie = req.headers.cookie;
+	if (cookie) {
+		const tokenCookieString = cookie.split(';').find((str) => str.startsWith('access_token='));
+		if (tokenCookieString) {
+			const token = tokenCookieString.split('=')[1];
+			if (token) {
+				const { _id } = jwt.verify(token, 'secret_id');
+				const user = await UserModel.findById(_id);
+				connection.userId = user._id;
+				connection.userName = user.userName;
+			}
+		}
+	}
+
+	notifyAboutOnlinePeople();
+});
