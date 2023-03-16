@@ -1,5 +1,6 @@
 export interface ChatSliceProps {
 	online: OnlineProp[];
+	ws: any;
 }
 
 export type OnlineProp = {

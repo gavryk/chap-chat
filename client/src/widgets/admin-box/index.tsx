@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { UIUser } from '../../components';
 import { logout } from '../../redux/slices/auth/asyncAuth';
 import { authSelector } from '../../redux/slices/auth/selector';
+import { setWs } from '../../redux/slices/chat/slice';
 import { useAppDispatch } from '../../redux/store';
 
 export const AdminBox: React.FC = () => {
@@ -12,6 +13,7 @@ export const AdminBox: React.FC = () => {
 
 	const logOut = () => {
 		dispatch(logout());
+		dispatch(setWs(null));
 	};
 
 	return (

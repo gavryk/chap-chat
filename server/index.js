@@ -94,31 +94,16 @@ ws.on('connection', async (connection, req) => {
 		[...ws.clients].forEach((client) => {
 			client.send(
 				JSON.stringify({
-					online: [...ws.clients].map(({ userId, userName, avatarUrl }) => ({
-						userId,
-						userName,
-						avatarUrl,
-					})),
+					online: [...ws.clients].map((client) => {
+						const { userId, userName, avatarUrl } = client;
+						if (client) {
+							return { userId, userName, avatarUrl };
+						}
+					}),
 				}),
 			);
 		});
 	}
-	connection.isAlive = true;
-
-	// connection.timer = setInterval(() => {
-	// 	connection.ping();
-	// 	connection.deathTimer = setTimeout(() => {
-	// 		connection.isAlive = false;
-	// 		clearInterval(connection.timer);
-	// 		connection.terminate();
-	// 		notifyAboutOnlinePeople();
-	// 		console.log('dead');
-	// 	}, 1000);
-	// }, 5000);
-
-	// connection.on('pong', () => {
-	// 	clearTimeout(connection.deathTimer);
-	// });
 
 	const cookie = req.headers.cookie;
 	if (cookie) {

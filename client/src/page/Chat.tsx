@@ -1,20 +1,24 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
-import { UIInput, UITypography } from '../components';
-import { setOnlinePeople } from '../redux/slices/chat/slice';
+import { useSelector } from 'react-redux';
+import { UIInput, UITypography, UIUser } from '../components';
+import { authSelector } from '../redux/slices/auth/selector';
+import { chatSelector } from '../redux/slices/chat/selector';
+import { setOnlinePeople, setWs } from '../redux/slices/chat/slice';
 import { useAppDispatch } from '../redux/store';
 import { AdminBox } from '../widgets';
 
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
-	const [ws, setWs] = useState<any>(null);
+	const { auth } = useSelector(authSelector);
+	const { ws, online } = useSelector(chatSelector);
 	const [msg, setMsg] = useState('');
 
 	const conectToWs = () => {
-		const socket = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
-		setWs(socket);
-		socket.addEventListener('message', handleMessage);
-		socket.addEventListener('close', () => {
+		const ws = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
+		dispatch(setWs(ws));
+		ws.addEventListener('message', handleMessage);
+		ws.addEventListener('close', () => {
 			setTimeout(() => {
 				console.log('Disconnected. Trying to reconnect.');
 				conectToWs();
@@ -23,8 +27,10 @@ export const Chat: React.FC = () => {
 	};
 
 	useEffect(() => {
-		conectToWs();
-	}, []);
+		if (auth) {
+			if (Object.keys(auth).length > 0) conectToWs();
+		}
+	}, [auth]);
 
 	const handleMessage = (ev: any) => {
 		const messageData = JSON.parse(ev.data);
@@ -35,8 +41,13 @@ export const Chat: React.FC = () => {
 
 	return (
 		<div className="flex w-full">
-			<div className="bg-blue-100 w-1/4 grid grid-rows-[1fr_auto] overflow-auto relative">
+			<div className="bg-blue-100 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
 				<UITypography variant="h3">Contacts</UITypography>
+				<div className="p-4">
+					{online.map((user) => (
+						<UIUser online={true} {...user} />
+					))}
+				</div>
 				<AdminBox />
 			</div>
 			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-auto relative">
