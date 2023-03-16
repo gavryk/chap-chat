@@ -87,16 +87,38 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 //Connect Socket
 const ws = new WebSocketServer({ server });
 //Connected to WebSocket
+
+console.log(ws);
 ws.on('connection', async (connection, req) => {
 	function notifyAboutOnlinePeople() {
 		[...ws.clients].forEach((client) => {
 			client.send(
 				JSON.stringify({
-					online: [...ws.clients].map((c) => ({ userId: c.userId, username: c.userName })),
+					online: [...ws.clients].map(({ userId, userName, avatarUrl }) => ({
+						userId,
+						userName,
+						avatarUrl,
+					})),
 				}),
 			);
 		});
 	}
+	connection.isAlive = true;
+
+	// connection.timer = setInterval(() => {
+	// 	connection.ping();
+	// 	connection.deathTimer = setTimeout(() => {
+	// 		connection.isAlive = false;
+	// 		clearInterval(connection.timer);
+	// 		connection.terminate();
+	// 		notifyAboutOnlinePeople();
+	// 		console.log('dead');
+	// 	}, 1000);
+	// }, 5000);
+
+	// connection.on('pong', () => {
+	// 	clearTimeout(connection.deathTimer);
+	// });
 
 	const cookie = req.headers.cookie;
 	if (cookie) {
@@ -108,6 +130,7 @@ ws.on('connection', async (connection, req) => {
 				const user = await UserModel.findById(_id);
 				connection.userId = user._id;
 				connection.userName = user.userName;
+				connection.avatarUrl = user?.avatarUrl;
 			}
 		}
 	}

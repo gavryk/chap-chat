@@ -1,18 +1,36 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { UIInput, UITypography } from '../components';
+import { setOnlinePeople } from '../redux/slices/chat/slice';
+import { useAppDispatch } from '../redux/store';
 import { AdminBox } from '../widgets';
 
 export const Chat: React.FC = () => {
+	const dispatch = useAppDispatch();
 	const [ws, setWs] = useState<any>(null);
-	useEffect(() => {
+	const [msg, setMsg] = useState('');
+
+	const conectToWs = () => {
 		const socket = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
 		setWs(socket);
 		socket.addEventListener('message', handleMessage);
+		socket.addEventListener('close', () => {
+			setTimeout(() => {
+				console.log('Disconnected. Trying to reconnect.');
+				conectToWs();
+			}, 1000);
+		});
+	};
+
+	useEffect(() => {
+		conectToWs();
 	}, []);
 
-	const handleMessage = (e: any) => {
-		console.log('new message', e);
+	const handleMessage = (ev: any) => {
+		const messageData = JSON.parse(ev.data);
+		if ('online' in messageData) {
+			dispatch(setOnlinePeople(messageData.online));
+		}
 	};
 
 	return (
@@ -26,7 +44,13 @@ export const Chat: React.FC = () => {
 					<UITypography variant="h3">Message</UITypography>
 				</div>
 				<div className="flex gap-2 sticky bottom-0 p-4 bg-blue-50">
-					<UIInput type="text" placeholder="Type your message here" className="flex-grow" />
+					<UIInput
+						type="text"
+						placeholder="Type your message here"
+						className="flex-grow"
+						value={msg}
+						onChange={(e) => setMsg(e.target.value)}
+					/>
 					<button className="bg-blue-500 p-2 text-white w-[50px] rounded-lg">
 						<FontAwesomeIcon icon={['fas', 'paper-plane']} color="#fff" />
 					</button>
