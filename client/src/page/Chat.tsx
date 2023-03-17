@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { UIInput, UITypography } from '../components';
 import { authSelector } from '../redux/slices/auth/selector';
 import { chatSelector } from '../redux/slices/chat/selector';
-import { setOnlinePeople, setWs } from '../redux/slices/chat/slice';
+import { setOnlinePeople } from '../redux/slices/chat/slice';
 import { useAppDispatch } from '../redux/store';
 import { AdminBox, UsersList } from '../widgets';
 import { AuthProps } from '../common';
@@ -13,20 +13,33 @@ import { AuthProps } from '../common';
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const { auth } = useSelector(authSelector);
-	const { ws, online } = useSelector(chatSelector);
+	const { online } = useSelector(chatSelector);
 	const [msg, setMsg] = useState('');
 	const [selectedUser, setSelectedUser] = useState<any>(null);
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
+	const [socket, setSocket] = useState<any>({});
 
-	const conectToWs = () => {
+	const connectToWs = () => {
 		const ws = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
-		dispatch(setWs(ws));
+		ws.addEventListener('open', (ws) => {
+			setSocket(ws.target);
+		});
 		ws.addEventListener('message', handleMessage);
+		ws.addEventListener('close', () => {
+			setTimeout(() => {
+				console.log('Disconnected. Trying to reconnect.');
+				connectToWs();
+			}, 1000);
+		});
+	};
+
+	const logoutHandler = () => {
+		setSocket(null);
 	};
 
 	useEffect(() => {
 		if (auth) {
-			if (Object.keys(auth).length > 0) conectToWs();
+			if (Object.keys(auth).length > 0) connectToWs();
 		}
 	}, [auth]);
 
@@ -46,13 +59,15 @@ export const Chat: React.FC = () => {
 		}
 	};
 
+	const onlineExclMeFromList = online.filter(({ userName }) => userName !== auth?.userName);
+
 	return (
 		<div className="flex w-full">
 			<div className="bg-blue-100 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
 				<UITypography variant="h3">Contacts</UITypography>
 				<div className="">
 					<UsersList
-						users={online}
+						users={onlineExclMeFromList}
 						online={true}
 						onClick={setSelectedUser}
 						selectedUser={selectedUser}
@@ -64,7 +79,7 @@ export const Chat: React.FC = () => {
 						selectedUser={selectedUser}
 					/>
 				</div>
-				<AdminBox />
+				<AdminBox logoutHandler={logoutHandler} />
 			</div>
 			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-auto relative">
 				<div className="p-4">

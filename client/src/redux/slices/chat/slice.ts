@@ -4,7 +4,6 @@ import { ChatSliceProps } from '../../../common/interfaces/chatInterfaces';
 
 const initialState: ChatSliceProps = {
 	online: [],
-	ws: null,
 };
 
 export const chatSlice = createSlice({
@@ -15,13 +14,10 @@ export const chatSlice = createSlice({
 			const uniqOnline = uniqBy(action.payload, 'userId');
 			state.online = uniqOnline as any;
 		},
-		setWs: (state, action) => {
-			state.ws = action.payload;
-		},
 	},
 	extraReducers: (builder) => {},
 });
 
-export const { setOnlinePeople, setWs } = chatSlice.actions;
+export const { setOnlinePeople } = chatSlice.actions;
 
 export default chatSlice.reducer;

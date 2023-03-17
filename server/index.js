@@ -88,15 +88,15 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 });
 
 //Connect Socket
-const ws = new WebSocketServer({ server });
+const wss = new WebSocketServer({ server });
 
 //Connected to WebSocket
-ws.on('connection', async (connection, req) => {
+wss.on('connection', async (connection, req) => {
 	function notifyAboutOnlinePeople() {
-		[...ws.clients].forEach((client) => {
+		[...wss.clients].forEach((client) => {
 			client.send(
 				JSON.stringify({
-					online: [...ws.clients].map((client) => {
+					online: [...wss.clients].map((client) => {
 						const { userId, userName, avatarUrl } = client;
 						if (client) {
 							return { userId, userName, avatarUrl };
@@ -106,6 +106,23 @@ ws.on('connection', async (connection, req) => {
 			);
 		});
 	}
+
+	connection.isAlive = true;
+
+	connection.timer = setInterval(() => {
+		connection.ping();
+		connection.deathTimer = setTimeout(() => {
+			connection.isAlive = false;
+			clearInterval(connection.timer);
+			connection.terminate();
+			notifyAboutOnlinePeople();
+			// console.log('dead');
+		}, 1000);
+	}, 5000);
+
+	connection.on('pong', () => {
+		clearTimeout(connection.deathTimer);
+	});
 
 	const cookie = req.headers.cookie;
 	if (cookie) {
