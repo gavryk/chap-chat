@@ -2,12 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from '../axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { UIInput, UITypography, UIUser } from '../components';
+import { UIInput, UITypography } from '../components';
 import { authSelector } from '../redux/slices/auth/selector';
 import { chatSelector } from '../redux/slices/chat/selector';
 import { setOnlinePeople, setWs } from '../redux/slices/chat/slice';
 import { useAppDispatch } from '../redux/store';
-import { AdminBox } from '../widgets';
+import { AdminBox, UsersList } from '../widgets';
 import { AuthProps } from '../common';
 
 export const Chat: React.FC = () => {
@@ -15,18 +15,13 @@ export const Chat: React.FC = () => {
 	const { auth } = useSelector(authSelector);
 	const { ws, online } = useSelector(chatSelector);
 	const [msg, setMsg] = useState('');
+	const [selectedUser, setSelectedUser] = useState<any>(null);
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
 
 	const conectToWs = () => {
 		const ws = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
 		dispatch(setWs(ws));
 		ws.addEventListener('message', handleMessage);
-		ws.addEventListener('close', () => {
-			setTimeout(() => {
-				console.log('Disconnected. Trying to reconnect.');
-				conectToWs();
-			}, 1000);
-		});
 	};
 
 	useEffect(() => {
@@ -55,13 +50,19 @@ export const Chat: React.FC = () => {
 		<div className="flex w-full">
 			<div className="bg-blue-100 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
 				<UITypography variant="h3">Contacts</UITypography>
-				<div className="p-4">
-					{online.map((user) => (
-						<UIUser online={true} {...user} key={user.userId} />
-					))}
-					{offlinePeople?.map((u) => (
-						<UIUser {...u} key={u._id} />
-					))}
+				<div className="">
+					<UsersList
+						users={online}
+						online={true}
+						onClick={setSelectedUser}
+						selectedUser={selectedUser}
+					/>
+					<UsersList
+						users={offlinePeople}
+						online={false}
+						onClick={setSelectedUser}
+						selectedUser={selectedUser}
+					/>
 				</div>
 				<AdminBox />
 			</div>

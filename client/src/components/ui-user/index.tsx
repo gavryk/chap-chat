@@ -4,11 +4,19 @@ import { AuthProps } from '../../common';
 
 type UserProps = Pick<AuthProps, 'userName' | 'avatarUrl'> & {
 	online?: boolean;
+	onClick?: () => void;
+	className?: string;
 };
 
-export const UIUser: React.FC<UserProps> = ({ userName, avatarUrl, online }) => {
+export const UIUser: React.FC<UserProps> = ({
+	userName,
+	avatarUrl,
+	online,
+	onClick,
+	className,
+}) => {
 	return (
-		<div className="grid grid-cols-[40px_auto] items-center gap-3">
+		<div className={`grid grid-cols-[40px_auto] items-center gap-3 ${className}`} onClick={onClick}>
 			<div className="relative">
 				<div className="rounded-full w-full overflow-hidden aspect-square">
 					<img

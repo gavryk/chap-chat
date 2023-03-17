@@ -89,6 +89,7 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 
 //Connect Socket
 const ws = new WebSocketServer({ server });
+
 //Connected to WebSocket
 ws.on('connection', async (connection, req) => {
 	function notifyAboutOnlinePeople() {
