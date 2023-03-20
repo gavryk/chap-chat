@@ -63,7 +63,12 @@ export const Chat: React.FC = () => {
 	return (
 		<div className="flex w-full">
 			<div className="bg-blue-100 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
-				<UITypography variant="h3">Contacts</UITypography>
+				<UITypography
+					variant="h3"
+					className="text-center pt-4 pb-2 font-bold text-blue-400 flex gap-2 justify-center items-center">
+					<FontAwesomeIcon icon={['fas', 'comments']} />
+					ChapChat
+				</UITypography>
 				<div className="">
 					<UsersList
 						users={onlineExclMeFromList}
