@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import multer from 'multer';
 import cookieParser from 'cookie-parser';
-import { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import { loginValidator, registerValidator } from './validations.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { register, login, getProfile, logout } from './controllers/UserController.js';
@@ -87,11 +87,25 @@ const server = app.listen(process.env.PORT || 4040, (err) => {
 	console.log('Server is running!');
 });
 
+//WebSocket
+
 //Connect Socket
 const wss = new WebSocketServer({ server });
 
 //Connected to WebSocket
 wss.on('connection', async (connection, req) => {
+	connection.on('message', (msg) => {
+		msg = JSON.parse(msg);
+		switch (msg.method) {
+			case 'connection':
+				connectionHandler(connection, msg);
+				break;
+			case 'draw':
+				broadcastConnection(connection, msg);
+				break;
+		}
+	});
+
 	const cookie = req.headers.cookie;
 	if (cookie) {
 		const tokenCookieString = cookie.split(';').find((str) => str.startsWith('access_token='));
@@ -106,12 +120,30 @@ wss.on('connection', async (connection, req) => {
 			}
 		}
 	}
+
 	connection.on('close', (data) => {
 		notifyAboutOnlinePeople();
 	});
 
 	notifyAboutOnlinePeople();
 });
+
+const connectionHandler = (ws, msg) => {
+	ws.id = msg.id;
+	broadcastConnection(ws, msg);
+};
+
+const broadcastConnection = (ws, msg) => {
+	wss.clients.forEach((client) => {
+		if (client.id !== msg.id) {
+			client.send(
+				JSON.stringify({
+					connectUser: { ...msg },
+				}),
+			);
+		}
+	});
+};
 
 function notifyAboutOnlinePeople() {
 	[...wss.clients].forEach((client) => {

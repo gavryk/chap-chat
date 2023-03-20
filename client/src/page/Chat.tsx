@@ -9,12 +9,15 @@ import { setOnlinePeople } from '../redux/slices/chat/slice';
 import { useAppDispatch } from '../redux/store';
 import { AdminBox, UsersList } from '../widgets';
 import { AuthProps } from '../common';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const { auth } = useSelector(authSelector);
 	const { online } = useSelector(chatSelector);
-	const [msg, setMsg] = useState('');
+	const [inputText, setInputText] = useState<string>('');
+	const [connectUser, setConnectUser] = useState<string>('');
 	const [selectedUser, setSelectedUser] = useState<any>(null);
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
 	const [connected, setConnected] = useState<boolean>();
@@ -24,6 +27,13 @@ export const Chat: React.FC = () => {
 		socket.current = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
 		socket.current.addEventListener('open', () => {
 			setConnected(true);
+			socket.current.send(
+				JSON.stringify({
+					id: auth?._id,
+					userName: auth?.userName,
+					method: 'connection',
+				}),
+			);
 		});
 		socket.current.addEventListener('message', handleMessage);
 		socket.current.addEventListener('close', () => {
@@ -51,10 +61,18 @@ export const Chat: React.FC = () => {
 		});
 	}, [online]);
 
+	useEffect(() => {
+		if (connectUser !== '') {
+			toast(`User ${connectUser} connected!`);
+		}
+	}, [connectUser]);
+
 	const handleMessage = (ev: any) => {
 		const messageData = JSON.parse(ev.data);
 		if ('online' in messageData) {
 			dispatch(setOnlinePeople(messageData.online));
+		} else if ('connectUser' in messageData) {
+			setConnectUser(messageData.connectUser.userName);
 		}
 	};
 
@@ -62,6 +80,18 @@ export const Chat: React.FC = () => {
 
 	return (
 		<div className="flex w-full">
+			<ToastContainer
+				position="top-right"
+				autoClose={3000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="dark"
+			/>
 			<div className="bg-blue-100 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
 				<UITypography
 					variant="h3"
@@ -94,8 +124,8 @@ export const Chat: React.FC = () => {
 						type="text"
 						placeholder="Type your message here"
 						className="flex-grow"
-						value={msg}
-						onChange={(e) => setMsg(e.target.value)}
+						value={inputText}
+						onChange={(e) => setInputText(e.target.value)}
 					/>
 					<button className="bg-blue-500 p-2 text-white w-[50px] rounded-lg">
 						<FontAwesomeIcon icon={['fas', 'paper-plane']} color="#fff" />
