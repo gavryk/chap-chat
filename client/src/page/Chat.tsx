@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from '../axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { UIInput, UITypography } from '../components';
 import { authSelector } from '../redux/slices/auth/selector';
@@ -17,24 +17,23 @@ export const Chat: React.FC = () => {
 	const [msg, setMsg] = useState('');
 	const [selectedUser, setSelectedUser] = useState<any>(null);
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
-	const [socket, setSocket] = useState<any>({});
+	const [connected, setConnected] = useState<boolean>();
+	const socket = useRef<any>(null);
 
 	const connectToWs = () => {
-		const ws = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
-		ws.addEventListener('open', (ws) => {
-			setSocket(ws.target);
+		socket.current = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
+		socket.current.addEventListener('open', () => {
+			setConnected(true);
 		});
-		ws.addEventListener('message', handleMessage);
-		ws.addEventListener('close', () => {
-			setTimeout(() => {
-				console.log('Disconnected. Trying to reconnect.');
-				connectToWs();
-			}, 1000);
+		socket.current.addEventListener('message', handleMessage);
+		socket.current.addEventListener('close', () => {
+			console.log('Disconnected.');
 		});
 	};
 
 	const logoutHandler = () => {
-		setSocket(null);
+		setConnected(false);
+		socket.current.close();
 	};
 
 	useEffect(() => {
