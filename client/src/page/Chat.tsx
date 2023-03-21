@@ -20,13 +20,11 @@ export const Chat: React.FC = () => {
 	const [connectUser, setConnectUser] = useState<string>('');
 	const [selectedUser, setSelectedUser] = useState<any>(null);
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
-	const [connected, setConnected] = useState<boolean>();
 	const socket = useRef<any>(null);
 
 	const connectToWs = () => {
 		socket.current = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
 		socket.current.addEventListener('open', () => {
-			setConnected(true);
 			socket.current.send(
 				JSON.stringify({
 					id: auth?._id,
@@ -36,13 +34,9 @@ export const Chat: React.FC = () => {
 			);
 		});
 		socket.current.addEventListener('message', handleMessage);
-		socket.current.addEventListener('close', () => {
-			console.log('Disconnected.');
-		});
 	};
 
 	const logoutHandler = () => {
-		setConnected(false);
 		socket.current.close();
 	};
 

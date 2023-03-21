@@ -1,9 +1,9 @@
 import React from 'react';
-import { AuthProps, OnlineProp } from '../../common';
+import { AuthProps, ChatUserProp } from '../../common';
 import { UIUser } from '../../components';
 
 interface UserListProps {
-	users: AuthProps[] | OnlineProp[];
+	users: AuthProps[] | ChatUserProp[];
 	online: boolean;
 	selectedUser: string;
 	onClick: (id: string) => void;

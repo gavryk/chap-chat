@@ -1,8 +1,8 @@
 export interface ChatSliceProps {
-	online: OnlineProp[];
+	online: ChatUserProp[];
 }
 
-export type OnlineProp = {
+export type ChatUserProp = {
 	userId: string;
 	userName: string;
 	avatarUrl?: string;

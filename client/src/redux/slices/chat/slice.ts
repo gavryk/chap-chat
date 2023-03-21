@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import uniqBy from 'lodash/uniqBy';
 import { ChatSliceProps } from '../../../common/interfaces/chatInterfaces';
+import { store } from '../../store';
 
 const initialState: ChatSliceProps = {
 	online: [],
