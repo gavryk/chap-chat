@@ -11,11 +11,14 @@ import { AdminBox, UsersList } from '../widgets';
 import { AuthProps } from '../common';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { setLoading } from '../redux/slices/settings/slice';
+import { settingsSelector } from '../redux/slices/settings/selector';
 
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const { auth } = useSelector(authSelector);
 	const { online } = useSelector(chatSelector);
+	const { isLoaded } = useSelector(settingsSelector);
 	const [inputText, setInputText] = useState<string>('');
 	const [connectUser, setConnectUser] = useState<string>('');
 	const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -23,6 +26,7 @@ export const Chat: React.FC = () => {
 	const socket = useRef<any>(null);
 
 	const connectToWs = () => {
+		setLoading('loading');
 		socket.current = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
 		socket.current.addEventListener('open', () => {
 			socket.current.send(
@@ -34,6 +38,7 @@ export const Chat: React.FC = () => {
 			);
 		});
 		socket.current.addEventListener('message', handleMessage);
+		setLoading('success');
 	};
 
 	const logoutHandler = () => {
@@ -47,11 +52,13 @@ export const Chat: React.FC = () => {
 	}, [auth]);
 
 	useEffect(() => {
+		setLoading('loading');
 		axios.get('/people').then((res) => {
 			const offlinePeopleArr = res.data
 				.filter((p: any) => p._id !== auth?._id)
 				.filter((p: any) => online.every((user) => p._id !== user.userId));
 			setOfflinePeople(offlinePeopleArr);
+			setLoading('success');
 		});
 	}, [online]);
 
@@ -94,20 +101,24 @@ export const Chat: React.FC = () => {
 					ChapChat
 				</UITypography>
 				<div className="">
-					<UsersList
-						users={onlineExclMeFromList}
-						online={true}
-						onClick={setSelectedUser}
-						selectedUser={selectedUser}
-					/>
-					<UsersList
-						users={offlinePeople}
-						online={false}
-						onClick={setSelectedUser}
-						selectedUser={selectedUser}
-					/>
+					{isLoaded === 'success' && (
+						<UsersList
+							users={onlineExclMeFromList}
+							online={true}
+							onClick={setSelectedUser}
+							selectedUser={selectedUser}
+						/>
+					)}
+					{isLoaded === 'success' && (
+						<UsersList
+							users={offlinePeople}
+							online={false}
+							onClick={setSelectedUser}
+							selectedUser={selectedUser}
+						/>
+					)}
 				</div>
-				<AdminBox logoutHandler={logoutHandler} />
+				{isLoaded === 'success' && <AdminBox logoutHandler={logoutHandler} />}
 			</div>
 			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-auto relative">
 				<div className="p-4">

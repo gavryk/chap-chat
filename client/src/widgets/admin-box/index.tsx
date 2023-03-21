@@ -17,7 +17,7 @@ export const AdminBox: React.FC<any> = ({ logoutHandler }) => {
 
 	return (
 		<div className="flex justify-between items-center px-2 py-3 sticky bottom-0 bg-white">
-			{auth && <UIUser {...auth} />}
+			{auth && <UIUser {...auth} userId={auth._id} />}
 			<button className="text-black hover:text-red-500 ease-in-out duration-500" onClick={logOut}>
 				<FontAwesomeIcon icon={['fas', 'right-from-bracket']} />
 			</button>
