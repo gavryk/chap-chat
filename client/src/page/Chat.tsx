@@ -77,6 +77,19 @@ export const Chat: React.FC = () => {
 		}
 	};
 
+	const sendMessage = (ev: any) => {
+		if (ev) ev.preventDefault();
+		socket.current.send(
+			JSON.stringify({
+				method: 'message',
+				message: {
+					recipient: selectedUser,
+					text: inputText,
+				},
+			}),
+		);
+	};
+
 	const onlineExclMeFromList = online.filter(({ userName }) => userName !== auth?.userName);
 
 	return (
@@ -124,18 +137,20 @@ export const Chat: React.FC = () => {
 				<div className="p-4">
 					<UITypography variant="h3">Message</UITypography>
 				</div>
-				<div className="flex gap-2 sticky bottom-0 p-4 bg-blue-50">
-					<UIInput
-						type="text"
-						placeholder="Type your message here"
-						className="flex-grow"
-						value={inputText}
-						onChange={(e) => setInputText(e.target.value)}
-					/>
-					<button className="bg-blue-500 p-2 text-white w-[50px] rounded-lg">
-						<FontAwesomeIcon icon={['fas', 'paper-plane']} color="#fff" />
-					</button>
-				</div>
+				{!!selectedUser && (
+					<form onSubmit={sendMessage} className="flex gap-2 sticky bottom-0 p-4 bg-blue-50">
+						<UIInput
+							type="text"
+							placeholder="Type your message here"
+							className="flex-grow"
+							value={inputText}
+							onChange={(e) => setInputText(e.target.value)}
+						/>
+						<button type="submit" className="bg-blue-500 p-2 text-white w-[50px] rounded-lg">
+							<FontAwesomeIcon icon={['fas', 'paper-plane']} color="#fff" />
+						</button>
+					</form>
+				)}
 			</div>
 		</div>
 	);

@@ -8,7 +8,7 @@ export const socketConnect = (server) => {
 
 	//Connected to WebSocket
 	wss.on('connection', async (connection, req) => {
-		connection.on('message', (msg) => {
+		connection.on('message', (msg, isBinary) => {
 			msg = JSON.parse(msg);
 			switch (msg.method) {
 				case 'connection':
@@ -16,6 +16,9 @@ export const socketConnect = (server) => {
 					break;
 				case 'draw':
 					broadcastConnection(connection, msg);
+					break;
+				case 'message':
+					console.log(msg);
 					break;
 			}
 		});
