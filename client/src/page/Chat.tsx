@@ -23,6 +23,7 @@ export const Chat: React.FC = () => {
 	const [connectUser, setConnectUser] = useState<string>('');
 	const [selectedUser, setSelectedUser] = useState<any>(null);
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
+	const [messages, setMessages] = useState<any[]>([]);
 	const socket = useRef<any>(null);
 
 	const connectToWs = () => {
@@ -74,6 +75,8 @@ export const Chat: React.FC = () => {
 			dispatch(setOnlinePeople(messageData.online));
 		} else if ('connectUser' in messageData) {
 			setConnectUser(messageData.connectUser.userName);
+		} else {
+			console.log(messageData);
 		}
 	};
 
@@ -88,6 +91,8 @@ export const Chat: React.FC = () => {
 				},
 			}),
 		);
+		setInputText('');
+		setMessages((prev) => [...prev, { text: inputText, isOur: true }]);
 	};
 
 	const onlineExclMeFromList = online.filter(({ userName }) => userName !== auth?.userName);
@@ -135,7 +140,13 @@ export const Chat: React.FC = () => {
 			</div>
 			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-auto relative">
 				<div className="p-4">
-					<UITypography variant="h3">Message</UITypography>
+					{!!selectedUser && (
+						<div>
+							{messages.map((mes, index) => (
+								<div key={`${mes.text}_${index}`}>{mes.text}</div>
+							))}
+						</div>
+					)}
 				</div>
 				{!!selectedUser && (
 					<form onSubmit={sendMessage} className="flex gap-2 sticky bottom-0 p-4 bg-blue-50">

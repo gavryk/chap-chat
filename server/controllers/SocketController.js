@@ -18,7 +18,20 @@ export const socketConnect = (server) => {
 					broadcastConnection(connection, msg);
 					break;
 				case 'message':
-					console.log(msg);
+					const { recipient, text } = msg.message;
+					if (recipient && text) {
+						[...wss.clients]
+							.filter((user) => user.id === recipient)
+							.forEach((u) =>
+								u.send(
+									JSON.stringify({
+										text,
+										sender: connection.userId,
+										recipient,
+									}),
+								),
+							);
+					}
 					break;
 			}
 		});
