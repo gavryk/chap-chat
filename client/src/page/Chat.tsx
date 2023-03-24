@@ -13,6 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { setLoading } from '../redux/slices/settings/slice';
 import { settingsSelector } from '../redux/slices/settings/selector';
+import { uniqBy } from 'lodash';
 
 export const Chat: React.FC = () => {
 	const dispatch = useAppDispatch();
@@ -75,8 +76,8 @@ export const Chat: React.FC = () => {
 			dispatch(setOnlinePeople(messageData.online));
 		} else if ('connectUser' in messageData) {
 			setConnectUser(messageData.connectUser.userName);
-		} else {
-			console.log(messageData);
+		} else if ('text' in messageData) {
+			setMessages((prev) => [...prev, { ...messageData }]);
 		}
 	};
 
@@ -92,10 +93,14 @@ export const Chat: React.FC = () => {
 			}),
 		);
 		setInputText('');
-		setMessages((prev) => [...prev, { text: inputText, isOur: true }]);
+		setMessages((prev) => [
+			...prev,
+			{ text: inputText, sender: auth?._id, recipient: selectedUser, _id: Date.now() },
+		]);
 	};
 
 	const onlineExclMeFromList = online.filter(({ userName }) => userName !== auth?.userName);
+	const messagesWithoutDupes = uniqBy(messages, '_id');
 
 	return (
 		<div className="flex w-full">
@@ -138,16 +143,23 @@ export const Chat: React.FC = () => {
 				</div>
 				{isLoaded === 'success' && <AdminBox logoutHandler={logoutHandler} />}
 			</div>
-			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-auto relative">
-				<div className="p-4">
-					{!!selectedUser && (
-						<div>
-							{messages.map((mes, index) => (
-								<div key={`${mes.text}_${index}`}>{mes.text}</div>
-							))}
-						</div>
-					)}
-				</div>
+			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-y-auto relative">
+				{!!selectedUser && (
+					<div className="p-4">
+						{messagesWithoutDupes.map((mess, index) => (
+							<div
+								className={mess.sender === auth?._id ? 'text-right' : 'text-left'}
+								key={`${mess.text}_${index}`}>
+								<div
+									className={`p-2 my-2 rounded-md text-sm inline-block ${
+										mess.sender === auth?._id ? 'bg-blue-500 text-white' : 'bg-white text-gray-500'
+									}`}>
+									{mess.text}
+								</div>
+							</div>
+						))}
+					</div>
+				)}
 				{!!selectedUser && (
 					<form onSubmit={sendMessage} className="flex gap-2 sticky bottom-0 p-4 bg-blue-50">
 						<UIInput
