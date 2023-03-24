@@ -1,5 +1,6 @@
 import { WebSocketServer } from 'ws';
 import jwt from 'jsonwebtoken';
+import Message from '../models/Message.js';
 import UserModel from '../models/User.js';
 
 export const socketConnect = (server) => {
@@ -8,7 +9,7 @@ export const socketConnect = (server) => {
 
 	//Connected to WebSocket
 	wss.on('connection', async (connection, req) => {
-		connection.on('message', (msg, isBinary) => {
+		connection.on('message', async (msg, isBinary) => {
 			msg = JSON.parse(msg);
 			switch (msg.method) {
 				case 'connection':
@@ -18,19 +19,30 @@ export const socketConnect = (server) => {
 					broadcastConnection(connection, msg);
 					break;
 				case 'message':
-					const { recipient, text } = msg.message;
-					if (recipient && text) {
-						[...wss.clients]
-							.filter((user) => user.id === recipient)
-							.forEach((u) =>
-								u.send(
-									JSON.stringify({
-										text,
-										sender: connection.userId,
-										recipient,
-									}),
-								),
-							);
+					try {
+						const { recipient, text } = msg.message;
+						if (recipient && text) {
+							const messageDoc = new Message({
+								sender: connection.userId,
+								recipient,
+								text,
+							});
+							const msgDb = await messageDoc.save();
+							[...wss.clients]
+								.filter((user) => user.id === recipient)
+								.forEach((u) =>
+									u.send(
+										JSON.stringify({
+											text,
+											sender: connection.userId,
+											recipient,
+											_id: msgDb._id,
+										}),
+									),
+								);
+						}
+					} catch (error) {
+						console.log(error);
 					}
 					break;
 			}

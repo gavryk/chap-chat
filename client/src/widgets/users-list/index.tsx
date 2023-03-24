@@ -18,7 +18,7 @@ export const UsersList: React.FC<UserListProps> = ({ users, online, onClick, sel
 					{...user}
 					userId={user._id || user.userId}
 					key={user?.userId || user?._id}
-					onClick={() => onClick(user.userId || user._id)}
+					onClick={() => onClick(user._id || user.userId)}
 					className={`py-2 px-3 cursor-pointer duration-500 hover:bg-sky-200 ${
 						selectedUser === user._id || selectedUser === user.userId ? 'bg-sky-200' : ''
 					}`}
