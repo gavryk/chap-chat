@@ -26,6 +26,7 @@ export const Chat: React.FC = () => {
 	const [offlinePeople, setOfflinePeople] = useState<AuthProps[]>([]);
 	const [messages, setMessages] = useState<any[]>([]);
 	const socket = useRef<any>(null);
+	const msgBox = useRef<HTMLDivElement>(null);
 
 	const connectToWs = () => {
 		setLoading('loading');
@@ -99,6 +100,13 @@ export const Chat: React.FC = () => {
 		]);
 	};
 
+	useEffect(() => {
+		const div = msgBox.current;
+		if (div) {
+			div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}
+	}, [messages]);
+
 	const onlineExclMeFromList = online.filter(({ userName }) => userName !== auth?.userName);
 	const messagesWithoutDupes = uniqBy(messages, '_id');
 
@@ -158,6 +166,7 @@ export const Chat: React.FC = () => {
 								</div>
 							</div>
 						))}
+						<div ref={msgBox}></div>
 					</div>
 				)}
 				{!!selectedUser && (
