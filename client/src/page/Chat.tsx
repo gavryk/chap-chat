@@ -116,7 +116,7 @@ export const Chat: React.FC = () => {
 				pauseOnHover
 				theme="dark"
 			/>
-			<div className="bg-blue-100 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
+			<div className="bg-blue-50 w-1/4 grid grid-rows-[auto_1fr_auto] overflow-auto relative">
 				<UITypography
 					variant="h3"
 					className="text-center pt-4 pb-2 font-bold text-blue-400 flex gap-2 justify-center items-center">
@@ -143,7 +143,7 @@ export const Chat: React.FC = () => {
 				</div>
 				{isLoaded === 'success' && <AdminBox logoutHandler={logoutHandler} />}
 			</div>
-			<div className="bg-blue-50 w-3/4 grid grid-rows-[1fr_auto] overflow-y-auto relative">
+			<div className="bg-blue-100 w-3/4 grid grid-rows-[1fr_auto] overflow-y-auto relative">
 				{!!selectedUser && (
 					<div className="p-4">
 						{messagesWithoutDupes.map((mess, index) => (
@@ -161,7 +161,7 @@ export const Chat: React.FC = () => {
 					</div>
 				)}
 				{!!selectedUser && (
-					<form onSubmit={sendMessage} className="flex gap-2 sticky bottom-0 p-4 bg-blue-50">
+					<form onSubmit={sendMessage} className="flex gap-2 sticky bottom-0 px-4 py-3 bg-blue-100">
 						<UIInput
 							type="text"
 							placeholder="Type your message here"
