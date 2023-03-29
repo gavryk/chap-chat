@@ -107,6 +107,12 @@ export const Chat: React.FC = () => {
 		}
 	}, [messages]);
 
+	useEffect(() => {
+		if (selectedUser) {
+			axios.get(`/messages/${selectedUser}`);
+		}
+	}, [selectedUser]);
+
 	const onlineExclMeFromList = online.filter(({ userName }) => userName !== auth?.userName);
 	const messagesWithoutDupes = uniqBy(messages, '_id');
 
