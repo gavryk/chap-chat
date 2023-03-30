@@ -20,6 +20,6 @@ export const getMessages = async (req, res) => {
 	const messages = await MessageModel.find({
 		sender: { $in: [userId, myId] },
 		recipient: { $in: [userId, myId] },
-	}).sort({ createdAt: -1 });
+	}).sort({ createdAt: 1 });
 	res.json(messages);
 };

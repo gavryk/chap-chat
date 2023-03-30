@@ -109,7 +109,9 @@ export const Chat: React.FC = () => {
 
 	useEffect(() => {
 		if (selectedUser) {
-			axios.get(`/messages/${selectedUser}`);
+			axios.get(`/messages/${selectedUser}`).then((res) => {
+				setMessages(res.data);
+			});
 		}
 	}, [selectedUser]);
 
