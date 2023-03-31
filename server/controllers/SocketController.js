@@ -5,7 +5,7 @@ import UserModel from '../models/User.js';
 
 export const socketConnect = (server) => {
 	//Connect Socket
-	const wss = new WebSocketServer({ httpServer: server });
+	const wss = new WebSocketServer({ server });
 
 	//Connected to WebSocket
 	wss.on('connection', async (connection, req) => {
