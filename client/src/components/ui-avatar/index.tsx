@@ -9,7 +9,7 @@ type AvatarProps = {
 };
 
 export const UIAvatar: React.FC<AvatarProps> = ({ userId, avatarUrl, alt, online }) => {
-	const avatarColor = useAvatarHolder(userId || '11111111111111', alt);
+	const avatarColor = useAvatarHolder(userId || '11111111111111', alt || '11111111111111');
 
 	return (
 		<div className="relative">
