@@ -51,7 +51,7 @@ const upload = multer({ storage });
 app.post('/auth/register', registerValidator, handleValidationErrors, register);
 app.post('/auth/login', loginValidator, handleValidationErrors, login);
 //get profile
-app.get('/profile', getProfile);
+app.get('/profile', checkAuth, getProfile);
 app.post('/logout', logout);
 //Get People
 app.get('/people', getAllPeople);
