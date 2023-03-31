@@ -30,7 +30,7 @@ export const Chat: React.FC = () => {
 
 	const connectToWs = () => {
 		setLoading('loading');
-		socket.current = new WebSocket(`ws://${process.env.REACT_APP_SOCKET_URL}`);
+		socket.current = new WebSocket(`wss://${process.env.REACT_APP_SOCKET_URL}`);
 		socket.current.addEventListener('open', () => {
 			socket.current.send(
 				JSON.stringify({
