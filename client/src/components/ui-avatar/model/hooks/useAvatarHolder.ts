@@ -17,8 +17,8 @@ const AvatarColor: AvatarColorMap = {
 
 const calculateColor = (userId: string, alt: string): string => {
 	const userIdBase10 = userId
-		? parseInt(userId.substring(10), 16)
-		: parseInt(alt.substring(10), 16);
+		? parseInt(userId?.substring(10), 16)
+		: parseInt(alt?.substring(10), 16);
 
 	const colors = Object.values(AvatarColor);
 	const colorIndex = userIdBase10 % colors.length;
