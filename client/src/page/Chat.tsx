@@ -73,7 +73,11 @@ export const Chat: React.FC = () => {
 
 	const handleMessage = (ev: any) => {
 		const messageData = JSON.parse(ev.data);
-		if ('online' in messageData) {
+		if (
+			'online' in messageData &&
+			Array.isArray(messageData.online) &&
+			messageData.online.length > 0
+		) {
 			dispatch(setOnlinePeople(messageData.online));
 		} else if ('connectUser' in messageData) {
 			setConnectUser(messageData.connectUser.userName);
