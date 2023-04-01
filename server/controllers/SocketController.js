@@ -91,12 +91,13 @@ export const socketConnect = (server) => {
 		[...wss.clients].forEach((client) => {
 			client.send(
 				JSON.stringify({
-					online: [...wss.clients].map((client) => {
+					online: [...wss.clients].reduce((acc, client) => {
 						const { userId, userName, avatarUrl } = client;
-						if (client && client.userId && client.userName && client !== null) {
-							return { userId, userName, avatarUrl };
+						if (client && client.userId && client.userName) {
+							acc.push({ userId, userName, avatarUrl });
 						}
-					}),
+						return acc;
+					}, []),
 				}),
 			);
 		});
