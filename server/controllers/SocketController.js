@@ -93,7 +93,7 @@ export const socketConnect = (server) => {
 				JSON.stringify({
 					online: [...wss.clients].map((client) => {
 						const { userId, userName, avatarUrl } = client;
-						if (client) {
+						if (client && client.userId && client.userName) {
 							return { userId, userName, avatarUrl };
 						}
 					}),
