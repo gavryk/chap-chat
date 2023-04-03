@@ -19,6 +19,10 @@
   <li>Node Js</li>
   <li>WebSocket</li>
   <li>Express</li>
-  <li>Mongo</li>
-  
+  <li>Mongoose</li>
+  <li>Mongo DB</li>
+  <li>jsonwebtoken</li>
+  <li>Multer</li>
+  <li>nodemon</li>
+  <li>bcrypt</li>
 </ul>
