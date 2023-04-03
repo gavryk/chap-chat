@@ -1,9 +1,11 @@
-Stack:
+<h2>Stack:</h2>
 
-React
-React Router
-Redux Toolkit
-Typescript
-Axios
-clsx
-tailwindcss - I use it for the first time in a project
+<ul>
+  <li>React</li>
+  <li>React Router</li>
+  <li>Redux Toolkit</li>
+  <li>Typescript</li>
+  <li>Axios</li>
+  <li>clsx</li>
+  <li>tailwindcss - I use it for the first time in a project</li>
+</ul>
