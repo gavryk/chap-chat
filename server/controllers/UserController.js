@@ -24,7 +24,12 @@ export const login = async (req, res) => {
 
 		const token = jwt.sign({ _id: user._id }, 'secret_id', { expiresIn: '30d' });
 		return res
-			.cookie('access_token', token, { httpOnly: true, secure: true })
+			.cookie('access_token', token, {
+				httpOnly: true,
+				secure: true,
+				sameSite: 'strict',
+				secureProxy: true,
+			})
 			.status(200)
 			.json({ ...userData });
 	} catch (err) {
