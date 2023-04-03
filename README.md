@@ -1,3 +1,6 @@
+https://chap-chat.vercel.app/
+The domain may not be paid for, so if something is not working for you, contact me in private messages
+
 <h2>Stack Client:</h2>
 
 <ul>
