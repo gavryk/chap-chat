@@ -55,13 +55,11 @@ export const Chat: React.FC = () => {
 	}, [auth]);
 
 	useEffect(() => {
-		setLoading('loading');
 		axios.get('/people').then((res) => {
 			const offlinePeopleArr = res.data
 				.filter((p: any) => p._id !== auth?._id)
 				.filter((p: any) => online.every((user) => p._id !== user.userId));
 			setOfflinePeople(offlinePeopleArr);
-			setLoading('success');
 		});
 	}, [online]);
 
@@ -144,7 +142,7 @@ export const Chat: React.FC = () => {
 					ChapChat
 				</UITypography>
 				<div className="">
-					{isLoaded === 'success' && (
+					{online.length > 0 && (
 						<UsersList
 							users={onlineExclMeFromList}
 							online={true}
@@ -152,7 +150,7 @@ export const Chat: React.FC = () => {
 							selectedUser={selectedUser}
 						/>
 					)}
-					{isLoaded === 'success' && (
+					{offlinePeople.length > 0 && (
 						<UsersList
 							users={offlinePeople}
 							online={false}
